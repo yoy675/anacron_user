@@ -3,6 +3,5 @@ cron.*/
 !cron.*/
 !cron.*/0anacron
 !cron.*/.placeholder
-cron./*/*
 !cron.*/0anacron
 !cron.*/.placeholder
