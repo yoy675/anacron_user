@@ -1,0 +1,8 @@
+# Ignore all files in cron.* directories by default
+cron.*/
+!cron.*/
+!cron.*/0anacron
+!cron.*/.placeholder
+cron./*/*
+!cron.*/0anacron
+!cron.*/.placeholder
