@@ -1,0 +1,20 @@
+#!/bin/sh
+if flatpak ps| grep zapzap -q; then
+	echo "zapzap is currently running, not cleaning cache"
+elif find /home/david/.var/app/com.rtosta.zapzap/data/ZapZap/QtWebEngine/storage-whats/IndexedDB/https_web.whatsapp.com_0.indexeddb.leveldb/*.ldb -type f -mtime +14| grep ".*" -q && [ du -cs /home/david/.var/app/com.rtosta.zapzap/data/ZapZap/QtWebEngine/storage-whats/IndexedDB/https_web.whatsapp.com_0.indexeddb.leveldb/*.ldb| tail -n 1| awk '{print $1}' -ge 2097152 ]; then
+	trash /home/david/.var/app/com.rtosta.zapzap/data/ZapZap/QtWebEngine/storage-whats/IndexedDB/https_web.whatsapp.com_0.indexeddb.leveldb/*.ldb
+fi
+trash /home/david/.cache/mozilla/firefox/*/cache2/entries/*
+find /home/david/Documents/JCT/ -empty -type d -exec trash {} +
+find /home/david/Documents/JCT/ -empty -type d -exec trash {} +
+find /home/david/Documents/JCT/ -empty -type d -exec trash {} +
+GLOBEIGNORE=*discord*:*ScriptCache*
+if find /home/david/.var/app -type f -regex ".*/[0-9a-fA-F]*_0" -mtime +30| grep ".*" -q && [ find /home/david/.var/app -type f -regex ".*/[0-9a-fA-F]*_0" -mtime +30 -print0 | xargs -0 du -cs| tail -n 1| awk '{print $1}' -ge 2097152 ]; then
+	find /home/david/.var/app -type f -regex ".*/[0-9a-fA-F]*_0" -delete # -exec trash {} +
+fi
+unset GLOBIGNORE
+yes| trash-empty 14
+yes| trash-empty 14 --trash-dir=/mnt/reserves/.Trash-1000/
+yes| trash-empty 14 --trash-dir=/home/david/.local/share/Trash
+cd /home/david/.anacron/ && ../Documents/Freestyle/shell/anacron_user_log_cleanup.sh
+exit 0
