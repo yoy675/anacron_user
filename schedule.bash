@@ -1,6 +1,6 @@
 #!/bin/bash
 
-MAILTO="$user"
+MAILTO="$USER"
 LOGFILE="$HOME/.anacron/anacron.log"  # Specify the path for the log file
 last_mod_time=$(stat --printf=%Y "$0")
 for (( current_mod_time=$(stat --printf=%Y "$0"); $current_mod_time == $last_mod_time; current_mod_time=$(stat --printf=%Y "$0") )); do
