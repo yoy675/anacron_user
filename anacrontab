@@ -4,13 +4,11 @@
 
 SHELL=/bin/sh
 HOME=/home/david
-LOGNAME=david
-MAILTO="david"
+LOGNAME=user
+MAILTO="user"
 
 # These replace cron's entries
 # days	delay	job-name	command
 1	5	cron.daily	run-parts --report $HOME/.anacron/cron.daily
 7	10	cron.weekly	run-parts --report $HOME/.anacron/cron.weekly
 @monthly	15	cron.monthly	run-parts --report $HOME/.anacron/cron.monthly
-
-# 7	20	JCT	/home/david/Documents/Freestyle/shell/update_jct_cron.sh
