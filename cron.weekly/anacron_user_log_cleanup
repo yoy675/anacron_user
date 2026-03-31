@@ -1,0 +1,61 @@
+#!/bin/bash
+
+cd ..
+LOG_FILE="anacron.log"
+TEMP_FILE="anacron.log.tmp"
+WEEK_AGO=$(date -d "7 days ago" +%Y-%m-%d)
+
+# 1. Identify line numbers for the last 5 entries of each category to protect them
+# The -a flag handles the 'binary file' issue.
+PROTECTED_LINES=$( (
+	grep -na "cron.yearly" "$LOG_FILE" | tail -n 5 | cut -d: -f1| awk '{print $0-1;print $0}'
+	grep -na "cron.monthly" "$LOG_FILE" | tail -n 5 | cut -d: -f1| awk '{print $0-1;print $0}'
+	grep -na "cron.weekly" "$LOG_FILE" | tail -n 5 | cut -d: -f1| awk '{print $0-1;print $0}'
+    grep -na "cron.daily" "$LOG_FILE" | tail -n 5 | cut -d: -f1
+    grep -na "cron.hourly" "$LOG_FILE" | tail -n 5 | cut -d: -f1
+) | sort -nu )
+
+# 2. Use AWK to keep lines that are either:
+#    a) Newer than a week ago
+#    b) Part of the 'protected' last 5 entries
+# This maintains the original file order.
+awk -v limit="$WEEK_AGO" -v protected="$PROTECTED_LINES" -v text_flag="-a" '
+BEGIN {
+    split(protected, p_array, "\n")
+    for (i in p_array) p_map[p_array[i]] = 1
+}
+{
+    # Extract date (assumes format YYYY-MM-DD at start of line or in INFO tags)
+    match($0, /[0-9]{4}-[0-9]{2}-[0-9]{2}/)
+    line_date = substr($0, RSTART, RLENGTH)
+
+    if (line_date >= limit || NR in p_map || $0 == "") {
+        print $0
+    }
+}' "$LOG_FILE" > "$TEMP_FILE"
+
+mv "$TEMP_FILE" "$LOG_FILE"
+#!/bin/bash
+
+LOG_FILE="anacron.log"
+TEMP_FILE="anacron.log.tmp"
+WEEK_AGO=$(date -d "7 days ago" +%Y-%m-%d)
+
+# 1. Identify and keep at least the last 5 entries for major categories
+# Regardless of age, ensuring you don't lose recent history for critical jobs.
+(
+	grep "cron.yearly" "$LOG_FILE" | tail -n 5
+	grep "cron.monthly" "$LOG_FILE" | tail -n 5
+	grep "cron.weekly" "$LOG_FILE" | tail -n 5
+    # Keep last 5 for daily jobs
+    #~ grep "cron.daily" "$LOG_FILE" | tail -n 5
+    # Keep last 5 for hourly jobs
+    #~ grep "cron.hourly" "$LOG_FILE" | tail -n 5
+
+    # 2. Add all entries from the last week that aren't already captured
+    awk -v limit="$WEEK_AGO" '$1 >= limit' "$LOG_FILE"
+) > "$TEMP_FILE"
+
+# Replace the old log with the cleaned version
+mv "$TEMP_FILE" "$LOG_FILE"
+exit 0
