@@ -1,0 +1,13 @@
+[Unit]
+Description=Start Anacron-emulator at boot and every minute
+
+[Timer]
+# Start the service at boot (when the user session starts)
+Persistent=true
+OnBootSec=1min
+# Also run repeatedly every minute (adjust as needed)
+OnCalendar=*-*-* *:*:00
+AccuracySec=1s
+
+[Install]
+WantedBy=timers.target

@@ -1,0 +1,19 @@
+[Unit]
+Description=Anacron-emulator script service
+After=graphical-session.target
+
+[Service]
+Type=simple
+# Run the original script (make sure it's executable)
+ExecStart=/home/david/.anacron/schedule
+# Restart if the process exits
+Restart=on-failure
+RestartSec=60
+# Ensure it stays running across logouts
+KillMode=process
+# Make stdout/stderr go to the user journal
+StandardOutput=journal
+StandardError=journal
+
+[Install]
+WantedBy=default.target
