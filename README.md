@@ -19,16 +19,13 @@ A user-friendly wrapper for anacron that simplifies scheduling recurring tasks o
    sudo dnf install anacron
    ```
 
-2. **Download and setup**:
+2. **Clone and run the install script**:
    ```bash
    git clone https://github.com/yoy675/anacron_user.git ~/.anacron
+   ~/.anacron/install.sh
    ```
 
-3. **Add to startup applications**:
-   Add `~/.anacron/schedule.bash` to your startup applications, or add this line to your `~/.bashrc`:
-   ```bash
-   source ~/.anacron/schedule.bash
-   ```
+   The install script will set up the systemd service and timer files, and enable them to run automatically.
 
 ## Usage
 
