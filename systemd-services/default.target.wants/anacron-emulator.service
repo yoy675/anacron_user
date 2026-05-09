@@ -5,7 +5,7 @@ After=graphical-session.target
 [Service]
 Type=simple
 # Run the original script (make sure it's executable)
-ExecStart=/home/user/.anacron/schedule
+ExecStart=$HOME/.anacron/schedule
 # Restart if the process exits
 Restart=on-failure
 RestartSec=60
