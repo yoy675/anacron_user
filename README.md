@@ -4,7 +4,6 @@ A user-friendly wrapper for anacron that simplifies scheduling recurring tasks o
 
 ## Requirements
 
-- Python regex module(might change)
 - anacron
 - Bash
 - Linux/Unix-based system
