@@ -19,6 +19,7 @@
 #  MA 02110-1301, USA.
 #
 #
+sed -i "s|\$HOME|$HOME|g" systemd-services/default.target.wants/anacron-emulator.service
 echo "Installing into \`~/.anacron'..."
 mkdir -p ~/.anacron ~/.config/systemd/user/
 mv systemd-services ~/.config/systemd/user/
