@@ -2,6 +2,7 @@
 
 cd /home/*/.anacron/
 LOG_FILE="anacron.log"
+if [ ! -d $LOG_FILE ];then exit 0;fi
 TEMP_FILE="anacron.log.tmp"
 WEEK_AGO=$(date -d "7 days ago" +%Y-%m-%d)
 
