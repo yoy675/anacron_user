@@ -2,21 +2,7 @@
 
 import sys
 
-def asteriskRange(time,mod=1):
-	if time==0:
-		rang=rangeToRegex("[0-59]",mod)
-	elif time==1:
-		rang=rangeToRegex("[0-23]",mod)
-	elif time==2:
-		rang=rangeToRegex("[1-31]",mod)
-	elif time==3:
-		rang=rangeToRegex("[1-12]",mod)
-	elif time==4:
-		rang=rangeToRegex("[0-6]",mod)
-	return rang
-
-
-def rangeToRegex(string,mod=1):
+def rangeToRegex(string):
 	regex_strings,ran=[],[]
 	for ranges in string.split(","):
 		if ranges.count("-")==0:
@@ -53,9 +39,18 @@ def main(args):
 				a=a.split("/")[0]
 				mod=int(a.split("/")[1])
 			if a.count("-")>0:
-				part.append(rangeToRegex(a,mod))
+				part.append(rangeToRegex(a))
 			elif a=="*":
-				part.append(asteriskRange(len(part),mod))
+				if len(part)==0:
+					part.append(rangeToRegex("[0-59]"))
+				elif len(part)==1:
+					part.append(rangeToRegex("[0-23]"))
+				elif len(part)==2:
+					part.append(rangeToRegex("[1-31]"))
+				elif len(part)==3:
+					part.append(rangeToRegex("[1-12]"))
+				elif len(part)==4:
+					part.append(rangeToRegex("[0-6]"))
 			elif a.count(",")!=0:
 				part.append(a.split(','))
 			elif 3<=len(part)<=4 and a.isalpha():
