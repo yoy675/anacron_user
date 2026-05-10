@@ -30,7 +30,7 @@ A user-friendly wrapper for anacron that simplifies scheduling recurring tasks o
    ```bash
    ~/.anacron/install.sh
    ```
-   This installs and enables the systemd service and timer files. Recommended for systems with systemd.
+   This installs the executable to `~/.local/bin/anacron-user` and enables the systemd service and timer files. Recommended for systems with systemd.
 
    **Option B: Manual startup (for non-systemd systems)**
    Add this line to your `~/.bashrc`:
