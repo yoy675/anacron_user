@@ -6,6 +6,7 @@ crontab="$HOME/.anacron/crontab"
 	current_time=$(date '+%-M %-H %-d %-m %-w')
 	cmd=$(~/.anacron/rangeToRegex.py "$(sed '/^ \?#/d;/^ \?[A-Za-z_][A-Za-z0-9_]*=/d;/^$/d;s|#.*||g' $crontab)" "$current_time")
 	eval "$(grep '^ \?[A-Za-z_][A-Za-z0-9_]*=' $crontab)" "$(echo $cmd| sed '/[^\\]%/ s|%|\n|')"
+	if [ ! -d $HOME/.anacron/cron.d/ ];then continue;fi
 	for file in $HOME/.anacron/cron.d/*;do
 		if [ $(sed '/^ \?#/d;/^ \?[A-Za-z_][A-Za-z0-9_]*=/d;/^$/d;s|#.*||g' $file)=='' ];then continue;fi
 		lines=$(~/.anacron/rangeToRegex.py "$(sed '/^ \?#/d;/^ \?[A-Za-z_][A-Za-z0-9_]*=/d;/^$/d;s|#.*||g' $file)" "$current_time")
