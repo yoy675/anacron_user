@@ -1,5 +1,5 @@
 [Unit]
-Description=Start Anacron-emulator at boot and every minute
+Description=Start Anacron-user at boot and every minute
 
 [Timer]
 # Start the service at boot (when the user session starts)

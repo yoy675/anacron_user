@@ -3,26 +3,27 @@
 MAILTO="$USER"
 LOGFILE="$HOME/.anacron/anacron.log"  # Specify the path for the log file
 crontab="$HOME/.anacron/crontab"
-last_mod_time=$(stat --printf=%Y "$0")
 last_hour=$(date '+%H')
-for (( current_mod_time=$(stat --printf=%Y "$0"); $current_mod_time == $last_mod_time; current_mod_time=$(stat --printf=%Y "$0") )); do
+rm $HOME/.anacron/fifo.*
+fifo="$HOME/.anacron/fifo.$$"
+mkfifo "$fifo"
+while true; do
 	{
-		if [ $(date '+%H')==$last_hour ];then
-			echo "$(date '+%H:%M:%S') - Starting anacron..."
-			anacron -d -S $HOME/.anacron/spool/anacron -t $HOME/.anacron/anacrontab
-			echo "$(date '+%H:%M:%S') - Finished anacron."
-			echo "Job 'cron.hourly' started."
-			cd $HOME/ && run-parts --report $HOME/.anacron/cron.hourly
-			echo "Job cron.hourly terminated on $(date '+%H:%M:%S')."
-			last_hour=$(date '+%H')
-		fi
 		current_time=$(date '+%-M %-H %-d %-m %-w')
-		cmd=$(cat $HOME/.anacron/crontab| grep -v ^#| awk -v time="$current_time" '{sch=($1=="*" ? "."$1 : $1); for (i=2; i<6; i++) {sch=($i=="*" ? sch OFS "."$i : sch OFS $i)};if (time ~ sch) {for(i=6;i<=NF;i++) printf "%s%s", $i, (i<NF? OFS:ORS)}}')
-		eval $cmd
-    } >> "$LOGFILE" 2>&1  # Append output and errors to the log file
+		cmd=$(~/.anacron/rangeToRegex.py "$(sed '/^ \?#/d;/^ \?[A-Za-z_][A-Za-z0-9_]*=/d;/^$/d;s|#.*||g' $crontab)" "$current_time")
+		eval "$(grep '^ \?[A-Za-z_][A-Za-z0-9_]*=' $crontab)" "$cmd"
+		for file in $HOME/.anacron/cron.d/*;do
+			if [ $(sed '/^ \?#/d;/^ \?[A-Za-z_][A-Za-z0-9_]*=/d;/^$/d;s|#.*||g' $file)=='' ];then continue;fi
+			lines=$(~/.anacron/rangeToRegex.py "$(sed '/^ \?#/d;/^ \?[A-Za-z_][A-Za-z0-9_]*=/d;/^$/d;s|#.*||g' $file)" "$current_time")
+			cmd="$(echo "$lines"| awk '{if ($0!="") print "sudo -u "$0}'| tr '\t' ' '| tr '%' '\n')"
+			if [[ ! -n $cmd ]];then
+				continue
+			fi
+			eval "$(grep '^ \?[A-Za-z_][A-Za-z0-9_]*=' $file)" "$cmd"
+		done
+    } >> "$LOGFILE" 2>&1&  # Append output and errors to the log file
+    read last_hour < "$fifo"
 	sleep 1m
 done
-kill $(jobs | grep "\[.\]" | sed 's|\[|%|g;s|].*||g')
-$0&
-disown
+rm "$fifo"
 exit 0

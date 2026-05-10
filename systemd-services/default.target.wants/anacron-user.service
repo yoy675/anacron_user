@@ -1,5 +1,5 @@
 [Unit]
-Description=Anacron-emulator script service
+Description=Anacron-user script service
 After=graphical-session.target
 
 [Service]

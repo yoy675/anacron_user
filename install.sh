@@ -1,5 +1,5 @@
 #!/bin/sh
-#  untitled.sh
+#  install.sh
 #
 #  Copyright 2026 David Robinson <darobins@g.jct.ac.il>
 #
@@ -19,13 +19,13 @@
 #  MA 02110-1301, USA.
 #
 #
-sed -i "s|\$HOME|$HOME|g" systemd-services/default.target.wants/anacron-emulator.service
+sed -i "s|\$HOME|$HOME|g" systemd-services/default.target.wants/anacron-user.service
 echo "Installing into \`~/.anacron'..."
-mkdir -p ~/.anacron ~/.config/systemd/user/
+mkdir -p ~/.config/systemd/user/
 mv systemd-services ~/.config/systemd/user/
-mv * ~/.anacron/
-echo "Enabling anacron-emulator.service and anacron-emulator.timer..."
-systemctl --user enable anacron-emulator.service anacron-emulator.timer
-echo "Starting anacron-emulator.timer..."
-systemctl --user start anacron-emulator.timer
+mv anacron-user ~/.local/bin/
+echo "Enabling anacron-user.service and anacron-user.timer..."
+systemctl --user enable anacron-user.service anacron-user.timer
+echo "Starting anacron-user.timer..."
+systemctl --user start anacron-user.timer
 exit 0
