@@ -22,51 +22,53 @@
 #
 
 
-import sys,regex
+import sys
 
 def asteriskRange(time,mod=1):
-	if mod==0:
+	if time==0:
 		rang=rangeToRegex("[0-59]",mod)
-	elif mod==1:
+	elif time==1:
 		rang=rangeToRegex("[0-23]",mod)
-	elif mod==2:
+	elif time==2:
 		rang=rangeToRegex("[1-31]",mod)
-	elif mod==3:
+	elif time==3:
 		rang=rangeToRegex("[1-12]",mod)
-	elif mod==4:
+	elif time==4:
 		rang=rangeToRegex("[0-6]",mod)
 	return rang
 
 
 def rangeToRegex(string,mod=1):
-	regex_strings=[]
+	regex_strings,ran=[],[]
 	for ranges in string.split(","):
 		if ranges.count("-")==0:
-			regex_strings.append(regx)
+			regex_strings.append(ranges)
+			ran.append(ranges)
 			continue
-		rang=ranges.strip("[]").split("-")
-		if len(rang[0])==len(rang[1])==1:
-			if mod==1:
-				regex_strings.append(f"{rang[0]}-{rang[1]}")
-			else:
-				for i in range(int(rang[0]),int(rang[1])+1):
-					if not i%mod: regex_strings.append(i)
-		elif len(rang[0])==1:
-			if mod==1:
-				regex_strings.append(f"{rang[0]}-9")
-				regex_strings.extend([str(i) for i in range(10,int(rang[1])+1,mod)])
-			else:
-				for i in range(int(rang[0]),10):
-					if not i%mod: regex_strings.append(i)
-				for i in range(10,int(rang[1])+1,mod):
-					if not i%mod: regex_strings.append(i)
-		else:
-			regex_strings.extend([str(i) for i in range(int(rang[0]),int(rang[1])+1,mod)])
-	return f"[{'|'.join(regex_strings)}]"
+		rang=[int(a) for a in ranges.strip("[]").split("-")]
+		ran.extend([i for i in range(rang[0],rang[1]+1)])
+		# ~ if len(f"rang[0]")==len(f"rang[1]")==1:
+			# ~ if mod==1:
+				# ~ regex_strings.append(f"{rang[0]}-{rang[1]}")
+			# ~ else:
+				# ~ for i in range(rang[0],rang[1]+1):
+					# ~ if not i%mod: regex_strings.append(i)
+		# ~ elif len(f"rang[0]")==1:
+			# ~ if mod==1:
+				# ~ regex_strings.append(f"{rang[0]}-9")
+				# ~ regex_strings.extend([str(i) for i in range(10,rang[1]+1)])
+			# ~ else:
+				# ~ for i in range(rang[0],10):
+					# ~ if not i%mod: regex_strings.append(i)
+				# ~ for i in range(10,rang[1]+1):
+					# ~ if not i%mod: regex_strings.append(i)
+		# ~ else:
+			# ~ regex_strings.extend([str(i) for i in range(rang[0],rang[1]+1)])
+	return ran
 
 def lin(line,time):
 	n=["",""]
-	part=[]
+	part,rang=[], []
 	if line.count("@"):
 		n=line.split(maxsplit=1)
 		if n[0]=="@reboot":
@@ -84,13 +86,14 @@ def lin(line,time):
 	for a in line.split(maxsplit=5)[:5]:
 		mod=1
 		if a.count("/")==1:
-			a,mod=a.split("/")
+			a=a.split("/")[0]
+			mod=int(a.split("/")[1])
 		if a.count("-")>0:
 			part.append(rangeToRegex(a,mod))
 		elif a=="*":
-			part.append(f".*") if mod==1 else asteriskRange(len(part),mod)
+			part.append(asteriskRange(len(part),mod))
 		elif a.count(",")!=0:
-			part.append(a.replace(",","|"))
+			part.append(a.split(','))
 		elif 3<=len(part)<=4 and a.isalpha():
 			if len(part)==3:
 				match a.lower():
@@ -135,14 +138,23 @@ def lin(line,time):
 					case "sat":
 						part.append(7)
 		else:
-			part.append(a)
-	n[0]=" ".join(part)
+			if len(part)==4:
+				part.append(int(a)%7)
+			else:
+				part.append(int(a))
+		if type(part[-1])==int:
+			rang.append(int(part[-1]))
+			continue
+		rang.append([int(i) for i in part[-1] if not int(i)%mod])
+	n[0]=" ".join(f"{part}")
 	n[1]=line.split(maxsplit=5)[5]
-	if regex.match(n[0],time): print(f'{n[1]}')
+	if len([i for i in range(5) if (type(rang[i])==int and int(time[i])==rang[i]) or (type(rang[i])==list and int(time[i]) in rang[i])])==5:
+		print(n[1])
 
 def main(args):
-	for line in regex.split("\n",args[0]):
-		lin(line,args[1])
+	for line in args[0].split("\n"):
+		if not line or len(args)<2 or not args[1]: return 0
+		lin(line,args[1].split())
 	return 0
 
 if __name__ == '__main__':
