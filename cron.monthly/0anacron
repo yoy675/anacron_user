@@ -9,4 +9,4 @@
 # _before_ all other scripts.
 
 test -x /usr/sbin/anacron -S $HOME/.anacron/spool/ -t $HOME/.anacron/anacrontab || exit 0
-anacron -S $HOME/.anacron/spool/ -t $HOME/.anacron/anacrontab -u cron.monthly
+anacron -S $HOME/.anacron/spool/anacron/ -t $HOME/.anacron/anacrontab -u cron.monthly
