@@ -47,23 +47,6 @@ def rangeToRegex(string,mod=1):
 			continue
 		rang=[int(a) for a in ranges.strip("[]").split("-")]
 		ran.extend([i for i in range(rang[0],rang[1]+1)])
-		# ~ if len(f"rang[0]")==len(f"rang[1]")==1:
-			# ~ if mod==1:
-				# ~ regex_strings.append(f"{rang[0]}-{rang[1]}")
-			# ~ else:
-				# ~ for i in range(rang[0],rang[1]+1):
-					# ~ if not i%mod: regex_strings.append(i)
-		# ~ elif len(f"rang[0]")==1:
-			# ~ if mod==1:
-				# ~ regex_strings.append(f"{rang[0]}-9")
-				# ~ regex_strings.extend([str(i) for i in range(10,rang[1]+1)])
-			# ~ else:
-				# ~ for i in range(rang[0],10):
-					# ~ if not i%mod: regex_strings.append(i)
-				# ~ for i in range(10,rang[1]+1):
-					# ~ if not i%mod: regex_strings.append(i)
-		# ~ else:
-			# ~ regex_strings.extend([str(i) for i in range(rang[0],rang[1]+1)])
 	return ran
 
 def lin(line,time):
