@@ -22,8 +22,8 @@
 sed -i "s|\$HOME|$HOME|g" systemd-services/default.target.wants/anacron-user.service
 echo "Installing into \`~/.anacron'..."
 mkdir -p ~/.config/systemd/user/
-mv systemd-services/* ~/.config/systemd/user/
-mv anacron-user ~/.local/bin/
+mv ~/.anacron/systemd-services/*/* ~/.config/systemd/user/
+mv ~/.anacron/anacron-user ~/.local/bin/
 echo "Enabling anacron-user.service and anacron-user.timer..."
 systemctl --user enable anacron-user.service anacron-user.timer
 echo "Starting anacron-user.timer..."
