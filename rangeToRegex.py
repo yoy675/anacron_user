@@ -108,7 +108,7 @@ def main(args):
 		n[0]=" ".join(f"{part}")
 		n[1]=line.split(maxsplit=5)[5]
 		if len([i for i in range(5) if (type(rang[i])==int and int(time[i])==rang[i]) or (type(rang[i])==list and int(time[i]) in rang[i])])==5:
-			print(n[1])
+			print(n[1]+'\\n')
 	return 0
 
 if __name__ == '__main__':
