@@ -14,8 +14,7 @@ echo "Removing systemd service files..."
 rm -rf ~/.config/systemd/user/anacron-user.service
 rm -rf ~/.config/systemd/user/anacron-user.timer
 
-echo ""
-echo "WARNING: This will delete ~/.anacron and ALL cron job scripts!"
+echo -e "\nWARNING: This will delete ~/.anacron and ALL cron job scripts!"
 read -p "Are you sure? (yes/no) " response
 if [ "$response" = "yes" ]; then
     rm -rf ~/.anacron
