@@ -56,6 +56,14 @@ tar -czf ~/backup.tar.gz ~/important_files/' > ~/.anacron/cron.daily/backup.sh
 chmod +x ~/.anacron/cron.daily/backup.sh
 ```
 
+## Uninstallation
+
+```bash
+~/.anacron/uninstall.sh
+```
+
+This will remove the systemd services and executable. Your cron job scripts in `~/.anacron/cron.*/` are preserved.
+
 ## License
 
 See LICENSE file for details.
