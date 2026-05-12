@@ -10,7 +10,7 @@ def rangeToRegex(string):
 			ran.append(ranges)
 			continue
 		rang=[int(a) for a in ranges.strip("[]").split("-")]
-		ran.extend([i for i in range(rang[0],rang[1]+1)])
+		ran.extend(list(range(rang[0],rang[1]+1)))
 	return ran
 
 def main(args):
@@ -22,22 +22,23 @@ def main(args):
 		if line.count("@"):
 			n=line.split(maxsplit=1)
 			if n[0]=="@reboot":
-				print(f'{n[1]}')
-			elif "@annually"==n[0]=="@yearly":
-				line="0 0 1 1 *"+n[1]
+				print(f'$reboot && {n[1]}')
+				continue
+			elif "@annually"==n[0] or n[0]=="@yearly":
+				line="0 0 1 1 * "+n[1]
 			elif n[0]=="@monthly":
-				line="0 0 1 * *"+n[1]
+				line="0 0 1 * * "+n[1]
 			elif n[0]=="@weekly":
-				line="0 0 * * 0"+n[1]
-			elif "@midnight"==n[0]=="@daily":
-				line="0 0 * * *"+n[1]
+				line="0 0 * * 0 "+n[1]
+			elif "@midnight"==n[0] or n[0]=="@daily":
+				line="0 0 * * * "+n[1]
 			elif n[0]=="@hourly":
-				line="0 * * * *"+n[1]
+				line="0 * * * * "+n[1]
 		for a in line.split(maxsplit=5)[:5]:
 			mod=1
 			if a.count("/")==1:
-				a=a.split("/")[0]
 				mod=int(a.split("/")[1])
+				a=a.split("/")[0]
 			if a.count("-")>0:
 				part.append(rangeToRegex(a))
 			elif a=="*":

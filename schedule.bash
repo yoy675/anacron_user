@@ -3,6 +3,7 @@
 LOGFILE="$HOME/.anacron/anacron.log"  # Specify the path for the log file
 crontab="$HOME/.anacron/crontab"
 last_hour=25 # To make sure it runs anacron on the first iteration
+reboot="true"
 rm $HOME/.anacron/fifo.*
 fifo="$HOME/.anacron/fifo.$$"
 mkfifo "$fifo"
@@ -23,6 +24,7 @@ while true;do
     } >> "$LOGFILE" 2>&1&  # Append output and errors to the log file
     read last_hour < "$fifo"
 	sleep 1m
+	reboot="false"
 done 2>> "$HOME/.anacron/crash.log"
 rm "$fifo"
 exit 0

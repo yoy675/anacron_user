@@ -25,5 +25,5 @@
 25 6	* * *	test -x /usr/sbin/anacron || { cd $HOME/ && run-parts --report $HOME/.anacron/cron.daily; }
 47 6	* * 7	test -x /usr/sbin/anacron || { cd $HOME/ && run-parts --report $HOME/.anacron/cron.weekly; }
 52 6	1 * *	test -x /usr/sbin/anacron || { cd $HOME/ && run-parts --report $HOME/.anacron/cron.monthly; }
+@yearly	cd $HOME/ && run-parts --report $HOME/.anacron/cron.yearly
 30 7-23 * * *   test -x /usr/sbin/anacron && anacron -d -S $HOME/.anacron/spool/anacron -t $HOME/.anacron/anacrontab
-
