@@ -40,7 +40,7 @@ clean_log() {
 	mv "$TEMP_FILE" "$LOG_FILE"
 }
 
-for file in spool/anacron/; do
+for file in spool/anacron/*; do
 	if sed '/^ \?#/d;/^ \?[A-Za-z_][A-Za-z0-9_]*=/d;/^$/d;s|#.*||g' anacrontab | awk '{print "spool/anacron/"$3}'| grep "$file" -q;then
 		continue
 	else
